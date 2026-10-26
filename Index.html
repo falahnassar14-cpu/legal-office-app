@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#145a55">
+<title>إدارة المكتب القانوني</title>
+<style>
+:root{--p:#145a55;--d:#103f3c;--g:#c5a45c;--bg:#f2f5f5;--line:#dce5e3;--red:#b64242}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#263936;font-family:Tahoma,Arial,sans-serif;line-height:1.7}
+header{background:linear-gradient(120deg,var(--d),var(--p));color:white;padding:23px 16px;border-bottom:4px solid var(--g)}
+header h1{font-size:22px;margin:0}
+header p{margin:3px 0;color:#dce9e7;font-size:13px}
+#clock{font-size:12px;color:#f0dfb5;margin-top:8px}
+main{max-width:1100px;margin:auto;padding:14px}
+nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+nav button{background:#e2ecea;color:var(--p);padding:13px 5px}
+nav button.active{background:var(--p);color:white}
+button{border:0;border-radius:9px;padding:10px 13px;font:inherit;font-weight:bold;cursor:pointer}
+.card{background:white;border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:14px;box-shadow:0 5px 18px #173b370a}
+h2{font-size:17px;color:var(--p);margin:0 0 12px}
+.panel{display:none}.panel.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.full{grid-column:1/-1}
+label{font-size:12px;font-weight:bold;color:#536661}
+input,select,textarea{width:100%;min-width:0;padding:10px;border:1px solid #cddbd8;border-radius:9px;background:#fcfdfd;font:inherit}
+textarea{min-height:85px;resize:vertical}
+.actions,.item-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.primary{background:var(--p);color:white}
+.secondary{background:#e5efed;color:var(--p)}
+.danger{background:#fae8e8;color:var(--red)}
+.small{font-size:12px;padding:7px 10px}
+.search{display:flex;gap:8px;margin-bottom:12px}
+.search input{flex:1}
+.list{display:grid;gap:10px}
+.item{background:white;border:1px solid var(--line);border-radius:11px;padding:12px;overflow-wrap:anywhere}
+.item strong{color:var(--p)}
+.tag{display:inline-block;background:#e8f1ef;color:var(--p);border-radius:20px;padding:2px 9px;font-size:11px;margin-top:4px}
+.details{font-size:13px;color:#52645f;margin-top:7px;white-space:pre-wrap}
+.empty{text-align:center;color:#758580;padding:22px;border:1px dashed #cbd9d6;border-radius:10px}
+.notice{background:#fff7e5;border:1px solid #efdfb7;color:#715923;border-radius:9px;padding:10px;font-size:12px;margin-bottom:12px}
+footer{text-align:center;color:#788985;font-size:11px;padding:15px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.list{grid-template-columns:repeat(2,minmax(0,1fr))}header{padding:28px max(18px,calc((100% - 1060px)/2))}}
+@media(max-width:360px){.grid{grid-template-columns:1fr}.search{flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+<h1>المحامي عبدالله صعابنه</h1>
+<p>للاستشارات القانونية والعقارية</p>
+<div id="clock"></div>
+</header>
+<main>
+<div class="notice">نسخة أولية: تُحفظ البيانات محليًا في المتصفح الحالي فقط. لا تضع بيانات سرية قبل إعداد التخزين الآمن والمزامنة.</div>
+<nav>
+<button class="active" data-tab="cases">⚖️ القضايا</button>
+<button data-tab="hearings">📅 الجلسات</button>
+<button data-tab="notes">📝 الملاحظات</button>
+</nav>
+
+<section id="cases" class="panel active">
+<div class="card">
+<h2 id="ctitle">إضافة قضية</h2>
+<form id="cf">
+<input type="hidden" id="cid">
+<div class="grid">
+<div class="field"><label>اسم المحكمة</label><input id="court" required placeholder="اسم المحكمة"></div>
+<div class="field"><label>نوع الدعوى</label><select id="type"><option>حقوق</option><option>تنفيذ</option><option>جنح</option><option>جنايات</option><option>شرعية</option><option>عمالية</option><option>أخرى</option></select></div>
+<div class="field"><label>رقم القضية</label><input id="num" required></div>
+<div class="field"><label>تاريخ الورود</label><input id="received" type="date"></div>
+<div class="field"><label>الهيئة الحاكمة</label><input id="panel"></div>
+<div class="field"><label>حالة الدعوى</label><select id="status"><option>جديدة</option><option>مؤجلة</option><option>متروكة</option><option>تأجيل عام</option><option>وقف السير للنظر في الطلب/ دعوى أخرى</option></select></div>
+<div class="field"><label>الطرف الأول</label><input id="party1"></div>
+<div class="field"><label>الطرف الثاني</label><input id="party2"></div>
+<div class="field"><label>الشهود</label><input id="witnesses"></div>
+<div class="field"><label>الجلسة القادمة</label><input id="next" type="date"></div>
+<div class="field"><label>قيمة الدعوى</label><input id="amount" type="number" min="0" step="0.01"></div>
+<div class="field"><label>العملة</label><select id="currency"><option>شيكل</option><option>دينار</option><option>دولار</option><option>يورو</option></select></div>
+<div class="field"><label>رسم الدعوى</label><input id="fee1" type="number" min="0" step="0.01"></div>
+<div class="field"><label>رسم الوكالة</label><input id="fee2" type="number" min="0" step="0.01" value="100"></div>
+<div class="field"><label>رسم الحجز</label><input id="fee3" type="number" min="0" step="0.01"></div>
+<div class="field"><label>رسم التجديد</label><input id="fee4" type="number" min="0" step="0.01"></div>
+<div class="field"><label>رسم النشر</label><input id="fee5" type="number" min="0" step="0.01"></div>
+<div class="field"><label>رسوم أخرى</label><input id="fee6" type="number" min="0" step="0.01"></div>
+<div class="field"><label>رسم التصوير</label><input id="fee7" type="number" min="0" step="0.01"></div>
+<div class="field"><label>صفة المكتب</label><select id="capacity"><option>وكيل المدعي</option><option>وكيل المدعى عليه</option><option>وكيل المنفذ</option><option>وكيل المنفذ ضده</option><option>وكيل المشتكي</option><option>وكيل المتهم</option></select></div>
+<div class="field"><label>رقم الخزانة</label><input id="cabinet" placeholder="مثال: ت 1"></div>
+</div>
+<div class="actions"><button class="primary">حفظ القضية</button><button type="button" class="secondary" onclick="resetForm('cf','cid','ctitle','إضافة قضية')">تفريغ الحقول</button></div>
+</form>
+</div>
+<div class="card">
+<h2>سجل القضايا</h2>
+<div class="search"><input id="cs" placeholder="بحث برقم القضية أو الأطراف أو المحكمة"><button class="secondary" onclick="clearSearch('cs',renderCases)">مسح</button></div>
+<div id="clist" class="list"></div>
+</div>
+</section>
+
+<section id="hearings" class="panel">
+<div class="card">
+<h2 id="htitle">إضافة جلسة</h2>
+<form id="hf">
+<input type="hidden" id="hid">
+<div class="grid">
+<div class="field"><label>رقم القضية</label><input id="hnum" list="numbers" required placeholder="رقم القضية"><datalist id="numbers"></datalist></div>
+<div class="field"><label>تاريخ الجلسة</label><input id="hdate" type="date" required></div>
+<div class="field"><label>وقت الجلسة</label><input id="htime" type="time"></div>
+<div class="field"><label>اسم المحكمة</label><input id="hcourt"></div>
+<div class="field"><label>حالة الجلسة</label><select id="hstatus"><option>محددة</option><option>تمت</option><option>تأجيل</option><option>تأجيل عام</option><option>شطب</option><option>قرار</option></select></div>
+<div class="field full"><label>تفاصيل الجلسة والقرار</label><textarea id="hdetails"></textarea></div>
+</div>
+<div class="actions"><button class="primary">حفظ الجلسة</button><button type="button" class="secondary" onclick="resetForm('hf','hid','htitle','إضافة جلسة')">تفريغ الحقول</button></div>
+</form>
+</div>
+<div class="card"><h2>سجل الجلسات</h2><div class="search"><input id="hs" placeholder="بحث برقم القضية أو المحكمة أو التفاصيل"><button class="secondary" onclick="clearSearch('hs',renderHearings)">مسح</button></div><div id="hlist" class="list"></div></div>
+</section>
+
+<section id="notes" class="panel">
+<div class="card">
+<h2 id="ntitle">إضافة ملاحظة</h2>
+<form id="nf">
+<input type="hidden" id="nid">
+<div class="grid">
+<div class="field"><label>رقم القضية</label><input id="nnum" list="numbers" placeholder="رقم القضية إن وجد"></div>
+<div class="field"><label>اسم المحكمة</label><input id="ncourt"></div>
+<div class="field"><label>نوع الدعوى</label><input id="ntype"></div>
+<div class="field full"><label>نص الملاحظة</label><textarea id="ntext" required></textarea></div>
+</div>
+<div class="actions"><button class="primary">حفظ الملاحظة</button><button type="button" class="secondary" onclick="resetForm('nf','nid','ntitle','إضافة ملاحظة')">تفريغ الحقول</button></div>
+</form>
+</div>
+<div class="card"><h2>سجل الملاحظات</h2><div class="search"><input id="ns" placeholder="بحث برقم القضية أو نص الملاحظة"><button class="secondary" onclick="clearSearch('ns',renderNotes)">مسح</button></div><div id="nlist" class="list"></div></div>
+</section>
+<footer>نظام إدارة المكتب القانوني — نسخة تجريبية</footer>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const DBKEY='legalOfficeApp_v3';
+let db={cases:[],hearings:[],notes:[]};
+try{let old=JSON.parse(localStorage.getItem(DBKEY)||'null');if(old&&old.cases&&old.hearings&&old.notes)db=old;}catch(e){}
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const v=id=>$(id).value.trim();
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dt=s=>s?`${s.slice(8,10)}/${s.slice(5,7)}/${s.slice(0,4)}`:'—';
+function persist(){localStorage.setItem(DBKEY,JSON.stringify(db));renderAll();}
+function resetForm(form,id,title,text){$(form).reset();$(id).value='';$(title).textContent=text;if(form==='cf')$('fee2').value=100;}
+function clearSearch(id,fn){$(id).value='';fn();}
+function switchTab(id){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));}
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+function updateClock(){try{$('clock').textContent=new Intl.DateTimeFormat('ar-PS',{timeZone:'Asia/Hebron',dateStyle:'full',timeStyle:'short'}).format(new Date())}catch(e){}}
+updateClock();setInterval(updateClock,60000);
+
+const caseFields=['court','type','num','received','panel','status','party1','party2','witnesses','next','amount','currency','fee1','fee2','fee3','fee4','fee5','fee6','fee7','capacity','cabinet'];
+$('cf').onsubmit=e=>{e.preventDefault();let id=v('cid'),num=v('num');if(db.cases.some(c=>c.num.toLowerCase()===num.toLowerCase()&&c.id!==id)){alert('رقم القضية موجود مسبقًا');return;}let c={id:id||uid()};caseFields.forEach(k=>c[k]=v(k));let i=db.cases.findIndex(x=>x.id===id);if(i<0)db.cases.unshift(c);else db.cases[i]=c;persist();resetForm('cf','cid','ctitle','إضافة قضية');alert('تم حفظ القضية');};
+$('hf').onsubmit=e=>{e.preventDefault();let id=v('hid'),h={id:id||uid(),num:v('hnum'),date:v('hdate'),time:v('htime'),court:v('hcourt'),status:v('hstatus'),details:v('hdetails')};let i=db.hearings.findIndex(x=>x.id===id);if(i<0)db.hearings.unshift(h);else db.hearings[i]=h;persist();resetForm('hf','hid','htitle','إضافة جلسة');alert('تم حفظ الجلسة');};
+$('nf').onsubmit=e=>{e.preventDefault();let id=v('nid'),n={id:id||uid(),num:v('nnum'),court:v('ncourt'),type:v('ntype'),text:v('ntext')};let i=db.notes.findIndex(x=>x.id===id);if(i<0)db.notes.unshift(n);else db.notes[i]=n;persist();resetForm('nf','nid','ntitle','إضافة ملاحظة');alert('تم حفظ الملاحظة');};
+
+function editCase(id){let c=db.cases.find(x=>x.id===id);if(!c)return;caseFields.forEach(k=>$(k).value=c[k]||'');$('cid').value=id;$('ctitle').textContent='تعديل قضية';switchTab('cases');window.scrollTo(0,0);}
+function editHearing(id){let h=db.hearings.find(x=>x.id===id);if(!h)return;[['hnum','num'],['hdate','date'],['htime','time'],['hcourt','court'],['hstatus','status'],['hdetails','details']].forEach(([a,b])=>$(a).value=h[b]||'');$('hid').value=id;$('htitle').textContent='تعديل جلسة';switchTab('hearings');window.scrollTo(0,0);}
+function editNote(id){let n=db.notes.find(x=>x.id===id);if(!n)return;[['nnum','num'],['ncourt','court'],['ntype','type'],['ntext','text']].forEach(([a,b])=>$(a).value=n[b]||'');$('nid').value=id;$('ntitle').textContent='تعديل ملاحظة';switchTab('notes');window.scrollTo(0,0);}
+function del(kind,id){if(confirm('هل أنت متأكد من حذف السجل؟')){db[kind]=db[kind].filter(x=>x.id!==id);persist();}}
+function button(text,cls,fn){return `<button type="button" class="${cls} small" onclick="${fn}">${text}</button>`;}
+function item(title,tag,details,actions){return `<article class="item"><strong>${esc(title)}</strong><br><span class="tag">${esc(tag||'—')}</span><div class="details">${details.map(x=>`<div>${x}</div>`).join('')}</div><div class="item-actions">${actions}</div></article>`;}
+function renderCases(){let q=v('cs').toLowerCase();let arr=db.cases.filter(c=>caseFields.map(k=>c[k]).join(' ').toLowerCase().includes(q));$('clist').innerHTML=arr.length?arr.map(c=>item('القضية رقم '+c.num,c.status,[`المحكمة: ${esc(c.court)}`,`النوع: ${esc(c.type)} • الطرف الأول: ${esc(c.party1||'—')}`,`الطرف الثاني: ${esc(c.party2||'—')}`,`الجلسة القادمة: ${dt(c.next)}`,`قيمة الدعوى: ${esc(c.amount||'0')} ${esc(c.currency||'')}`],button('تعديل','secondary',`editCase('${c.id}')`)+button('حذف','danger',`del('cases','${c.id}')`))).join(''):'<div class="empty">لا توجد قضايا مسجلة أو مطابقة للبحث.</div>';}
+function renderHearings(){let q=v('hs').toLowerCase();let arr=db.hearings.filter(h=>[h.num,h.date,h.court,h.status,h.details].join(' ').toLowerCase().includes(q)).sort((a,b)=>(a.date||'').localeCompare(b.date||''));$('hlist').innerHTML=arr.length?arr.map(h=>item('جلسة القضية رقم '+h.num,h.status,[`التاريخ: ${dt(h.date)} • الوقت: ${esc(h.time||'—')}`,`المحكمة: ${esc(h.court||'—')}`,`التفاصيل: ${esc(h.details||'—')}`],button('تعديل','secondary',`editHearing('${h.id}')`)+button('حذف','danger',`del('hearings','${h.id}')`))).join(''):'<div class="empty">لا توجد جلسات مسجلة.</div>';}
+function renderNotes(){let q=v('ns').toLowerCase();let arr=db.notes.filter(n=>[n.num,n.court,n.type,n.text].join(' ').toLowerCase().includes(q));$('nlist').innerHTML=arr.length?arr.map(n=>item('ملاحظة القضية '+(n.num||'غير مرتبطة'),n.type,[`المحكمة: ${esc(n.court||'—')}`,`الملاحظة: ${esc(n.text)}`],button('تعديل','secondary',`editNote('${n.id}')`)+button('حذف','danger',`del('notes','${n.id}')`))).join(''):'<div class="empty">لا توجد ملاحظات مسجلة.</div>';}
+function renderAll(){renderCases();renderHearings();renderNotes();$('numbers').innerHTML=db.cases.map(c=>`<option value="${esc(c.num)}"></option>`).join('');}
+['cs','hs','ns'].forEach((id,i)=>$(id).addEventListener('input',[renderCases,renderHearings,renderNotes][i]));
+$('hnum').addEventListener('change',()=>{let c=db.cases.find(x=>x.num===v('hnum'));if(c&&!v('hcourt'))$('hcourt').value=c.court;});
+$('nnum').addEventListener('change',()=>{let c=db.cases.find(x=>x.num===v('nnum'));if(c){$('ncourt').value=c.court;$('ntype').value=c.type;}});
+renderAll();
+</script>
+</body>
+</html>
