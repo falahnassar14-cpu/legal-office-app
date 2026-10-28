@@ -1,0 +1,28 @@
+{
+  "id": "./",
+  "name": "المكتب القانوني - إدارة القضايا والجلسات",
+  "short_name": "المكتب القانوني",
+  "description": "إدارة القضايا والجلسات والملاحظات والتقارير القانونية",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#091d21",
+  "theme_color": "#102d32",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
